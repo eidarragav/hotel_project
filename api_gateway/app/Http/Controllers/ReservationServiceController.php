@@ -20,6 +20,18 @@ class ReservationServiceController extends Controller
     }
 
     public function store(Request $request){
+        $validar_room = Http::withHeaders([
+            "Authorization" => env("TOKEN")
+        ])->get(env("VALIDATE_ROOM")."/".$request->room_id);
+        
+        if($validar_room->status() == 404){
+            return response()->json(["mensaje" => "no existe"]);
+        }
+
+        if($validar_room->status() == 403){
+            return response()->json(["mensaje" => "no disponibilidad"]);   
+        }
+
         $response = Http::withHeaders([
             "Authorization" => env("TOKEN")
         ])->post(env("RESERVATION_ENDPOINT"), [
@@ -27,6 +39,10 @@ class ReservationServiceController extends Controller
             "nights" => $request->nights,
             "total_price" => $request->total_price,
         ]);
+
+        $descontar_habitaciones = Http::withHeaders([
+            "Authorization" => env("TOKEN")
+        ])->get(env("DESCONTAR_HABITACION")."/".$request->room_id);
 
         return [
             "status" => $response->status(),

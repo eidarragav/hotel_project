@@ -7,6 +7,36 @@ use App\Models\Room;
 
 class RoomController extends Controller
 {
+    //Metodo para saber si existe, si hay mas de una disponible y 
+    //retornar el precio
+    public function validate_room($id){
+        $room = Room::find($id);
+
+        //Si no existe :
+        if(!$room){
+            //Luego desde el gateway preguntaremos si la respuesta tiene 
+            //codigo 404
+            return response()->json(["mensaje"=> "no existe"], 404);
+        }
+        
+        if($room->available_rooms < 1){
+            return response()->json(["mensaje" => "no disponibilidad"], 403);
+        }
+
+        return response()->json(["price" => $room->price]);
+    }
+
+    //Para desonctar
+
+    public function descontar_habitacion($id){
+        $room = Room::find($id);
+
+        $room->available_rooms = $room->available_rooms-1;
+
+        $room->save();
+    }
+
+
     /**
      * Display a listing of the resource.
      */

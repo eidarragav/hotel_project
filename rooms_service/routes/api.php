@@ -23,3 +23,6 @@ Route::get("/rooms", [RoomController::class, "index"]);
 Route::post("/rooms", [RoomController::class, "store"]);
 Route::put("/rooms/{id}", [RoomController::class, "update"]);
 Route::delete("/rooms/{id}", [RoomController::class, "destroy"]);
+
+Route::get("/rooms/validate_room/{id}", [RoomController::class, "validate_room"]);
+Route::get("/rooms/descontar_habitacion/{id}", [RoomController::class, "descontar_habitacion"]);
